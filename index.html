@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>World Tour (D3)</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/business-casual.css" rel="stylesheet">
+
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome-animation.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <div class="brand">World Tour (D3)</div>
+    <div class="address-bar">GES 387 - Interactive Cartography</div>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="box">
+                <!--<div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">
+                        <strong>blog</strong>
+                    </h2>
+                    <hr>
+                </div>-->
+                <div class="col-lg-12 text-center" style="text-align:left">
+                  <h3>What is World Tour (D3)?</h3>
+                        <p><i class="fa fa-spinner fa-spin"></i> <b>D3 is Data-Driven Documents:</B>  “D3.js is a JavaScript library for manipulating documents based on data. D3 helps you bring data to life using HTML, SVG and CSS. D3’s emphasis on web standards gives you the full capabilities of modern browsers without tying yourself to a proprietary framework, combining powerful visualization components and a data-driven approach to DOM manipulation.” (d3js.org, 2016) <br> <br> D3 offered a countless number of really cool interactive maps. There are many different styles and ideas to add interactions to web maps. In this tutortial, I will explains the steps and the necessity data in order to have a succesful D3 World Tour Map. <br><br>The amount of data reqired for this map is very concise, but it provided a comprehensive and sophisticated interactive map. (you can scroll down the bottom to see <a href="#final"><b>an example of the final product</b></a>).</p>
+                        <!-- <p><i class="fa fa-spinner fa-spin"></i>  Please submit your assignment via <b>Dropbox on D2L</b> according to the requirements in the <a href="#hw"><b>Deliverables</b></a> section at the bottom.</p> -->
+                        <!-- <<p style="color:red"><b><i class="fa fa-spinner fa-spin"></i>  Due: 11:59 pm, Wednesday, 11/2</b></p> -->
+
+                        <h3><i class="fa fa-paint-brush"></i> Prepare Data</h3>
+
+                          <p>Please follow every steps in these instructions (tutorials) to ensure that your work will be complete. </p>
+                          <ul>
+                            <li>Create a <b>new file folder</b> (e.g., World_Tour_D3) for this project.</li>
+                          <li style="font-weight:bold;color:red;">Getting Data: click <a href="https://drive.google.com/file/d/0B99cVYFvKlE-cklYaThUMW5jT00/view?usp=sharing" target="_blank">here</a> to download the lab data. </li>
+                          <li>Download <b>TopFiftyMilitaries.tsv</b> and save in your newly created folder (e.g., World_Tour_D3). Do not view the data table in google drive, open in Atom for the best result to view the data table</li>
+                          <li>Extract <b>one</b> file to your desired directory.</li>
+                          <li>Open <b>TopFiftyMilitaries.tsv</b> in <b>Atom</b>. Take a look at its attribute table, which contains the name of  top fifty countries with the largest militaries force. Also, you will see that there is an id number attached to each countries with is very crucial to have in order to identify the location (longitude and latitude) of each countries. (Note: I have created TopFiftyMilitaries.tsv file for this tutortial, you can created your own data as long you save it in tsv file)
+                          <!-- <li>In QGIS, go to <b>Vector > Geometry Tools > Simplify Geometries</b>, use tolerance <b>0.2</b> to simplify the geometry of the layer.
+                          <li> Save the layer as a <b>GeoJson</b> file to your lab folder (Be sure to use <b>EPSG:4326 - WGS 84</b> as the projection). </li>
+                          <li>Use <b>Atom</b> to open the GeoJSON file, place the following at the very beginning of the GeoJSON document (see image below):
+                            <pre><span style="color: blue">var</span> <var>data = </var></pre> -->
+                          <center>  <img src="img/TopFiftyMiltaries.png" width=80% ></img></center></li>
+                          <!-- <li>Save the changed GeoJSON as <code>data.js</code> to your <b>lab5 folder</b>. Note the file extension is <code>.js</code>.
+                        </ul> -->
+        <ul><li style="font-size:18px"> We do not need to create longitude and latitude becuase we will be using raw data (TopoJSON file) provided by Mike Bostock's. In other words, I am using id number for each desired countries in my tsv file and it will correspondence to the listed id number (see above list) in Mike Bostock's topojson layer (you can see it for yourself copy paste the line below in the search engines). We will use this line and I will show you where to put it later in this tutorial: <br><pre>"https://gist.githubusercontent.com/mbostock/4090846/raw/07e73f3c2d21558489604a0bc434b3a5cf41a867/world-110m.json"</pre> <br>  </li></li></ul>
+                    <h3><i class="fa fa-paint-brush"></i> Make a World Tour Interactive Map with D3 (Basic Steps)</h3>
+                    <ul>
+
+                            <li>Open your <b>html editor</b> (e.g., <b>Atom</b>) and add the following code snippets. Save it as <code>world_tour.html</code>.  <br><br>Please copy and paste directly onto your html editor, which include basic needs to make the world tour interactive map work. <br><br>
+                            We do <b>NOT</b> need to download the library files (leaflet and d3) as they are linked directly from the providers (Mike Bostock's Github's Gist).<br><br>
+                                                        <!-- Read the comment lines in blue for explanations and reminders if needed.<br> -->
+<pre>
+  &lt;!DOCTYPE html&gt;
+  &lt;html&gt;
+  &lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;style&gt;
+
+  h1 {
+  position: absolute;
+  top: 500px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  text-align: center;
+  width: 960px;
+  }
+
+  &lt;/style&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+  &lt;h2&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &lt;ins&gt; Top Fifty Largest Militaries in the World (2016):&lt;/ins&gt;&lt;/h2&gt;
+  &lt;h2&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;ins&gt; Consits of all Active, Reserve, and Paramiltary:&lt;/ins&gt;&lt;/h2&gt;
+  &lt;h3&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Created By: Robert John Senow&lt;/h3&gt;
+  &lt;h1&gt;&lt;/h1&gt;
+  &lt;script src="http://d3js.org/d3.v3.min.js"&gt;&lt;/script&gt;
+  &lt;script src="http://d3js.org/queue.v1.min.js"&gt;&lt;/script&gt;
+  &lt;script src="http://d3js.org/topojson.v1.min.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+
+  &lt;/script&gt;
+  &lt;/body&gt;
+  &lt;/html&gt;
+  </pre></li>
+                    <li>Check to make sure your titles of the map works before continue.</li></ul>
+
+             <h3><i class="fa fa-paint-brush"></i> Add World Tour (D3) Effects</h3>
+                    <p>Let's make the <b>interactive world tour</b>.</p>
+                    <ul>
+                      <li>Copy and paste the following snippets to the position shown in the image below. Please read the comment lines in blue for explanations. <br>
+                      <img src="img/part1.png" width=45% >
+                      <pre>
+<span style="color: blue">// Define the function for the world feature</span>
+
+      var width = 960,
+          height = 960;
+
+      var projection = d3.geo.orthographic() <span style="color: blue">// Define the projection by using orthographic data from D3 </span>
+          .translate([width / 2, height / 2])
+          .scale(width / 2 - 20)
+          .clipAngle(90)
+          .precision(0.6);
+
+      var canvas = d3.select("body").append("canvas")
+          .attr("width", width)
+          .attr("height", height);
+
+      var c = canvas.node().getContext("2d");
+
+      var path = d3.geo.path()<span style="color: blue">// Define the projection by using path data from D3 </span>
+          .projection(projection)
+          .context(c);
+
+      var title = d3.select("h1");
+
+      queue()
+
+      function ready(error, world, names) {
+        if (error) throw error;
+
+        var globe = {type: "Sphere"},<span style="color: blue">// Define the type of map (in this case we chose to use sphere) </span>
+            land = topojson.feature(world, world.objects.land),<span style="color: blue">// Define the TopoJSON using data from D3 (Mike Bostock) </span>
+            countries = topojson.feature(world, world.objects.countries).features,<span style="color: blue">// Define the countries name using data from D3 (Mike Bostock) </span>
+            borders = topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }),<span style="color: blue">// Define the countries' borders location using data from D3 (Mike Bostock) </span>
+            i = -1,
+            n = countries.length;
+
+        countries = countries.filter(function(d) {
+          return names.some(function(n) {
+            if (d.id == n.id) return d.name = n.name;
+          });
+        }).sort(function(a, b) {
+          return a.name.localeCompare(b.name);
+        });
+
+        (function transition() {
+          d3.transition()
+              .duration(2050)<span style="color: blue">// Define the speed of duration between countries (lower the number will increse the speed of the time span between each coutnries and higher the number will decrease the speed of the time span) </span>
+              .each("start", function() {
+                title.text(countries[i = (i + 1) % n].name);
+              })
+              .tween("rotate", function() {
+                var p = d3.geo.centroid(countries[i]),
+                    r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
+                return function(t) {
+                  projection.rotate(r(t));
+                  c.clearRect(0, 0, width, height);
+                  c.fillStyle = "#ccc", c.beginPath(), path(land), c.fill();
+                  c.fillStyle = "#f00", c.beginPath(), path(countries[i]), c.fill();
+                  c.strokeStyle = "#fff", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
+                  c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
+                };
+              })
+            .transition()
+              .each("end", transition);
+        })();
+      }
+
+      d3.select(self.frameElement).style("height", height + "px");
+    </pre></li>
+                      <li>Next, add the following line in the position as shown in the image below: <br>
+                        <pre>
+.defer(d3.json, "https://gist.githubusercontent.com/mbostock/4090846/raw/07e73f3c2d21558489604a0bc434b3a5cf41a867/world-110m.json")</pre>
+                      <img src="img/part2.png" width=35% ><br>This line will proivde the TopoJSON layer which will lay out all the countries around the world. As you can see here is that we are using a direct address (absolute to his gihub site).
+                    </ul>
+
+                    <li>Add the following line in the position as shown in the image below: <br>
+                      <pre>
+.defer(d3.tsv, "TopFiftyMilitaries.tsv")
+.await(ready); </pre>
+<img src="img/part3.png"  height=75% >
+<br><br>As you can tell, this line is what we looked at earlier in this tutorial, it is my data file (tsv) with each countries corresponding with id data base on the above TopoJSON layer from Mike Bostock.
+
+ <br>
+                  </ul>
+              <!-- <h3><i class="fa fa-paint-brush"></i> Add Chart as Mouseover Tooltips</h3>
+              <p>Finally, it's time to add the pie charts for mouseover and the pie chart legend.</p>
+                    <ul>
+                        <li>Following the line of <code>legend.addTo(map);</code>, add the following snippet to define the <code>makePie()</code> function.
+                        <pre>
+<span style="color: blue">// The <b>colors assigned to each category</b>, needs to be in the same <b>order</b> as the data items below</span>
+var <b>piecolor</b> = [<span style="color:#cc6600">"#EC7063", "#5DADE2","#27AE60","#F4D03F","#E67E22"</span>];
+
+<span style="color: blue">// The function used to make the pie/donut chart</span>
+function makePie(<span style="color:#cc6600">props</span>) {
+  <span style="color: blue">// First, define the <b>height and width of the pie chart in pixels</b>
+  // Variable name (h and w) doesn't matter as long as they are consistent</span>
+  var h = <span style="color:#cc6600">80</span>;
+  var w = <span style="color:#cc6600">80</span>;
+
+  <span style="color: blue">// Define the <b>radius of the pie</b> as half of the height and width
+  // Again, variable name (r) doesn't matters</span>
+  var r = h/2;
+
+  <span style="color: blue">// The <b>data values</b> for making the pie/donut chart
+  // In this case, we use the pie chart to show the five fields with population count for each ethnic group
+  // <b>props</b> will be defined as <b>layer.feature.properties</b> when the makePie function inside highlightFeature is called
+  // where <b>layer</b> is the borough under mouseover
+  // Then <b>props.White</b> will return White population count for the hovered borough, and so forth</span>
+  var <b>data</b> = [<span style="color:#cc6600">props.White, props.Black, props.Asian, props.Mixed, props.Other</span>];
+
+  <span style="color: blue">// Append the pie chart to the mouse over tooltip/pop-ups (no need to change)</span>
+  var svg = d3.select('#tooltip').select("svg").append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+  var pie = d3.pie().value(function(d){return d;});
+
+  <span style="color: blue">// Draw the arcs of the pie/donut chart
+  // You can change the size of the <b>innerRadius</b> to
+  // make either pie chart (use 0) or docut chart (greater than 0, less than r)</span>
+  var arc = d3.arc().outerRadius(r).innerRadius(<span style="color:#cc6600">16</span>);
+
+  <span style="color: blue">// Draw the slices of the pie/donut chart (no need to change)</span>
+  var arcs = svg.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+  arcs.append("svg:path")
+      .attr("fill", function(d, i){
+          return piecolor[i];
+      })
+      .attr("d", function (d) {
+          return arc(d);
+      });
+  }</pre></li>
+
+
+<li>Next, place the following lines right below <code>&lt;div id="map"&gt;&lt;/div&gt;</code> to define the <b>container</b> for the mouseover popups/tooltips.
+<pre>
+<span style="color:blue">/* Note the height and width of the container need to be greater than and equal to the height and width of the pie*/</span>
+&lt;div id="tooltip"&gt;
+  &lt;svg width="<span style="color:#cc6600">80</span>" height="<span style="color:#cc6600">80</span>"&gt;&lt;/svg&gt;
+&lt;/div&gt;</pre></li>
+<li>Next, place the following lines in the <code>style</code> section (inside <code>head</code>) to define the appearance of the mouseover popups container. <pre>
+#tooltip {
+  opacity: <span style="color:#cc6600">.9</span>;
+  font: <span style="color:#cc6600">14px/16px Helvetica, sans-serif</span>;
+  text-align: <span style="color:#cc6600">center</span>;
+  color: <span style="color:#cc6600">#777</span>;
+  background: <span style="color:#cc6600">rgba(255,255,255,0.8)</span>;
+  padding: <span style="color:#cc6600">5px</span>;
+  border: <span style="color:#cc6600">1px solid lightgrey</span>;
+  border-radius: <span style="color:#cc6600">5px</span>;
+  position: absolute;
+  z-index: 10;   <span style="color:blue"> /* stack order of an element
+                  An element with greater stack order is always in front of an element with a lower stack order
+                  Here we use 10 to make sure the popup is always on top of everything */</span>
+  visibility: hidden;
+  pointer-events: none;
+}</pre>
+
+Place your mouse over some boroughs, you should be able to see the pies, actually donuts now~</li>
+
+<li>The last step is to add legend for the pie charts, so that we know what each color represents in the pie. This is very similar to defining legend for the choropleth maps that you will see below. Add the following lines <b>following</b> the <code>makePie()</code> function.
+<pre>
+var info = L.control({position: '<span style="color:#cc6600">topleft</span>'}); <span style="color: blue">// The other three corners: <b>topright</b>, <b>bottomleft</b>, <b>bottomright</b></span>
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'legend');
+
+    <span style="color: blue">// The <b>labels</b> of for the color boxes in the same order as defined in the data variable (in this case, they are the five ethnic groups)</span>
+    var label = [<span style="color:#cc6600">"White","Black","Asian","Mixed","Other"</span>];
+
+    <span style="color: blue">// The <b>legend title/description</b></span>
+    this._div.innerHTML = '&lt;h4&gt;<span style="color:#cc6600">Ethnic Groups</span> &lt;br&gt; <span style="color:#cc6600">hover over a borough</span>&lt;/h4&gt;';
+
+    <span style="color: blue">// Create the color boxes in the same order as defined in the piecolor variable (no need to change)</span>
+    for (var i = 0; i &lt; label.length; i++) {
+        this._div.innerHTML +=
+        '&lt;i style="background:' + piecolor[i] + '"&gt;&lt;/i&gt;'+
+        (label[i+1] ? '' : '&lt;br&gt;');
+    }
+
+    <span style="color: blue">// Create the labels underneath the color boxes (no need to change)</span>
+    for (var i = 0; i &lt; label.length; i++) {
+        this._div.innerHTML += label[i]+ '&amp;nbsp&amp;nbsp';
+    }
+    return this._div;
+};
+
+info.addTo(map);
+</pre></li> -->
+
+<li> Now your map should have everything. See below for an example:
+
+                    <iframe id="final" src="map/final2.html" width=95% height=570 frameborder=0></iframe>
+                    </li>
+
+                </ul>
+                <br>
+
+                <br>
+                <h2 >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The End&nbsp;(<a href="#top" style="font-weight:normal; text-decoration:underline">Back to Top <i class="fa fa-arrow-circle-up faa-float animated" aria-hidden="true"></i></a>)</h2>
+
+                </ul><br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>Copyright &copy; Robert John Senow & Template Was Provided By Professor Ting Liu 2016</p>
+                      </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

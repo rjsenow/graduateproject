@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Chart</title>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css"/>
+      <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+      <script src="https://d3js.org/d3.v4.min.js"></script>
+
+
+      <script type="text/javascript" src="data.js"></script>
+
+      <style type="text/css">
+         html, body { margin: 0; padding: 0; height: 100%; }
+         #map { min-height: 100%; }
+
+         /* You can adjust the values below to change the appearance of the legend */
+         .legend {
+             padding: 6px 8px;
+             line-height: 20px;
+             background: rgba(255,255,255,0.9);
+             box-shadow: 0 0 15px rgba(0,0,0,0.2);
+             border-radius: 5px;
+         }
+
+          /* You can adjust the values below to change the appearance of the legend color boxes */
+          .legend i {
+             width: 24px;
+             height: 18px;
+             float: left;
+             padding-right: 5px;
+             margin-right: 8px;
+             opacity: 0.8;
+         }
+
+         /* You can adjust the values below to change the appearance of the legend title */
+         .legend h4 {
+           font: 14px/16px Arial, Helvetica, sans-serif;
+           line-height:22px;
+           font-weight: bold;
+           color: #848484;
+           margin: 0 0 5px;
+         }
+     </style>
+  </head>
+
+  <body>
+      <div id="map"></div>
+
+      <script type="text/javascript">
+        var map = L.map('map').setView([51.50,-0.18], 10);
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+          attribution: 'Pie chart made with <a href="https://d3js.org/">D3</a>, Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://mapbox.com">Mapbox</a>',
+          maxZoom: 11,
+          minZoom: 5,
+          id: 'mapbox.light',
+          accessToken: 'pk.eyJ1IjoiY3VyZW1hbmdvIiwiYSI6ImNpcTQ4cGFwbDAxbmVmd25vZGNiOTVzeGEifQ.GWZByYkIft6eMRha69C8nw'
+        }).addTo(map);
+
+        function getColor(value) {
+             return value > 100 ? '#54278f':
+                    value > 80  ? '#756bb1':
+                    value > 50  ? '#9e9ac8':
+                    value > 30  ? '#cbc9e2':
+                                  '#f2f0f7';
+         }
+
+         function style(feature){
+             return {
+                 fillColor: getColor(feature.properties.pop_den),
+                 weight: 2,
+                 opacity: 1,
+                 color: 'gray',
+                 fillOpacity: 0.9
+             };
+         }
+
+         var geojson
+         // Define the actions when mouseover a feature/borough
+function highlightFeature(e) {
+    var layer = e.target;
+      // You can adjust the values below to change the highlighting styles of features on mouseover
+      layer.setStyle({
+         weight: 5,
+         color: '#666',
+         dashArray: '', // defines the stroke dash pattern; check out the link for more: https://goo.gl/AWl5sC
+         fillOpacity: 0.7
+      });
+
+      // Fix display layer problems with IE and Opera (no need to change anything)
+      if (!L.Browser.ie && !L.Browser.opera) {
+         layer.bringToFront();
+      }
+
+      d3.select("#tooltip")
+      .style("visibility", "visible")
+      // You can define the position of the pie chart relative to the mouse location below
+      .style("top", (e.containerPoint.y-100)+"px")
+      .style("left", (e.containerPoint.x-100)+"px");
+
+      makePie(layer.feature.properties); // This function will be defined later.
+ }
+
+ // Define the actions when mouseout
+ function resetHighlight(e) {
+      geojson.resetStyle(e.target);
+      d3.select("#tooltip").style("visibility", "hidden");
+   }
+
+// Combine the mouseover and mouseout actions (defind above)
+ function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+    });
+}
+
+         geojson= L.geoJson(data, {
+             style: style,
+             onEachFeature: onEachFeature
+         }).addTo(map);
+
+         var legend = L.control({position: 'bottomright'}); // Try the other three corners if you like.
+
+         legend.onAdd = function (map) {
+             var div = L.DomUtil.create('div', 'legend'),
+                 grades = [20, 30, 50, 80, 100]; // The break values to define the intervals of population, beginning from 0
+
+             div.innerHTML = '<h4>Population Density <br>people/hectare, 2011 </h4>'; // The legend title
+
+             for (var i = 0; i < grades.length; i++) {
+                 div.innerHTML +=
+                 '<i style="background:' + getColor(grades[i] + 1) + '"></i>&nbsp&nbsp' +
+                 grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+             }
+             return div;
+         };
+         legend.addTo(map);
+
+      </script>
+ </body>
+</html>

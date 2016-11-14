@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Lab 5 - Charts</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/business-casual.css" rel="stylesheet">
+
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome-animation.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Slab:100,300,400,600,700,100italic,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <div class="brand">Lab 5. Charts</div>
+    <div class="address-bar">GES 387 - Interactive Cartography</div>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="box">
+                <!--<div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">
+                        <strong>blog</strong>
+                    </h2>
+                    <hr>
+                </div>-->
+                <div class="col-lg-12 text-center" style="text-align:left">
+                  <h3>Overview</h3>
+                        <p><i class="fa fa-spinner fa-spin"></i>  We have introduced the steps of making a choropleth map in Lab 3. But it was not quite interactive. There are many different ways and ideas to add interactions to web maps. In this exercise, we will explore the combination of charts and maps and displaying charts as mouse hover tooltips (you can scroll down the bottom to see <a href="#final"><b>an example of the final product</b></a>).</p>
+                        <p><i class="fa fa-spinner fa-spin"></i>  Please submit your assignment via <b>Dropbox on D2L</b> according to the requirements in the <a href="#hw"><b>Deliverables</b></a> section at the bottom.</p>
+                        <p style="color:red"><b><i class="fa fa-spinner fa-spin"></i>  Due: 11:59 pm, Wednesday, 11/2</b></p>
+
+                        <h3><i class="fa fa-paint-brush"></i> Prepare Data</h3>
+
+                          <p>First, let's spend some time to prepare the data to be used for this lab. Since we've done this in lab3, only general steps are provided below. If you forgot the details of some particular steps, please refer to the Lab 3 instructions.</p>
+                          <ul>
+                            <li>Create a <b>new file folder</b> (e.g., lab5) for this lab.</li>
+                          <li style="font-weight:bold;color:red;">Getting Data: click <a href="https://drive.google.com/file/d/0BzvZaHCgmEmNZGxza2FzRFQ1Ym8/view?usp=sharing" target="_blank">here</a> to download the lab data. </li>
+                          <li>Extract the files to your desired directory.</li>
+                          <li>Open <b>QGIS</b> and add the shapefile. Take a look at its attribute table, which contains the demographic data of the Greater London area at borough level. Please familiarize yourself with the field names:
+                            <ul><li style="font-size:18px">Specifically, <b>Total</b> refers to total population in 2011. There are five fields containing population count for the different ethnic groups: <b>White</b>, <b>Black</b>, <b>Asian</b>, <b>Mixed</b>, <b>Other</b>. And <b>pop_den</b> contains the population density in people/hectare. </li></li></ul>
+                          <li>In QGIS, go to <b>Vector > Geometry Tools > Simplify Geometries</b>, use tolerance <b>0.2</b> to simplify the geometry of the layer.
+                          <li> Save the layer as a <b>GeoJson</b> file to your lab folder (Be sure to use <b>EPSG:4326 - WGS 84</b> as the projection). </li>
+                          <li>Use <b>Atom</b> to open the GeoJSON file, place the following at the very beginning of the GeoJSON document (see image below):
+                            <pre><span style="color: blue">var</span> <var>data = </var></pre>
+                          <center>  <img src="img/geojson.png" width=80% ></img></center></li>
+                          <li>Save the changed GeoJSON as <code>data.js</code> to your <b>lab5 folder</b>. Note the file extension is <code>.js</code>.
+                        </ul>
+
+                    <h3><i class="fa fa-paint-brush"></i> Make a Choropleth Map with Legend</h3>
+                    <ul>
+
+                            <li>Open your <b>html editor</b> (e.g., <b>Atom</b>) and add the following code snippets. Save it as <code>map5.html</code>. Note you will need to <b>use your access token</b> to make it work. For <code>data.js</code>, you only need to change it if your data.js has been saved in a different folder relative to the .html file.  <br><br>They are pretty long, which include everything for making choropleth map and legend as we have already practiced in Lab 3. <br><br>
+                            We do NOT need to download the library files (leaflet and d3) as they are linked directly from the providers.<br><br>
+                            Read the comment lines in blue for explanations and reminders if needed.<br>
+                           <pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+      &lt;title&gt;Chart&lt;/title&gt;
+      &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css"/&gt;
+      &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"&gt;&lt;/script&gt;
+
+      &lt;script src="https://d3js.org/d3.v4.min.js"&gt;&lt;/script&gt;
+
+      &lt;script type="text/javascript" src="<span style="color: red; font-weight:bold">data.js</span>"&gt;&lt;/script&gt;
+
+      &lt;style type="text/css"&gt;
+         html, body { margin: 0; padding: 0; height: 100%; }
+         #map { min-height: 100%; }
+
+         <span style="color: blue">/* You can adjust the values below to change the <b>appearance of the legend</b> */</span>
+         .legend {
+             padding: 6px 8px;
+             line-height: 20px;
+             background: rgba(255,255,255,0.9);
+             box-shadow: 0 0 15px rgba(0,0,0,0.2);
+             border-radius: 5px;
+         }
+
+          <span style="color: blue">/* You can adjust the values below to change the <b>appearance of the legend color boxes</b> */</span>
+          .legend i {
+             width: 24px;
+             height: 18px;
+             float: left;
+             padding-right: 5px;
+             margin-right: 8px;
+             opacity: 0.8;
+         }
+
+         <span style="color: blue">/* You can adjust the values below to change the <b>appearance of the legend title</b> */</span>
+         .legend h4 {
+           font: 14px/16px Arial, Helvetica, sans-serif;
+           line-height:22px;
+           font-weight: bold;
+           color: #848484;
+           margin: 0 0 5px;
+         }
+     &lt;/style&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+      &lt;div id="map"&gt;&lt;/div&gt;
+
+      &lt;script type="text/javascript"&gt;
+        var map = L.map('map').setView([51.50,-0.18], 10);
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+          attribution: 'Pie chart made with &lt;a href="https://d3js.org/"&gt;D3&lt;/a&gt;, Map data &amp;copy; &lt;a href="http://openstreetmap.org"&gt;OpenStreetMap&lt;/a&gt; contributors, &lt;a href="http://creativecommons.org/licenses/by-sa/2.0/"&gt;CC-BY-SA&lt;/a&gt;, Imagery &amp;copy; &lt;a href="http://mapbox.com"&gt;Mapbox&lt;/a&gt;',
+          maxZoom: 11,
+          minZoom: 5,
+          id: 'mapbox.light',
+          accessToken: '<span style="color: red; font-weight:bold">Your Access Token</span>'
+        }).addTo(map);
+
+        function getColor(value) {
+             return value &gt; 100 ? '#54278f':
+                    value &gt; 80  ? '#756bb1':
+                    value &gt; 50  ? '#9e9ac8':
+                    value &gt; 30  ? '#cbc9e2':
+                                  '#f2f0f7';
+         }
+
+         function style(feature){
+             return {
+                 fillColor: getColor(feature.properties.pop_den),
+                 weight: 2,
+                 opacity: 1,
+                 color: 'gray',
+                 fillOpacity: 0.9
+             };
+         }
+
+         var geojson
+
+         geojson= L.geoJson(data, {
+             style: style,
+
+         }).addTo(map);
+
+         var legend = L.control({position: 'bottomright'}); // Try the other three corners if you like.
+
+         legend.onAdd = function (map) {
+             var div = L.DomUtil.create('div', 'legend'),
+                 grades = [20, 30, 50, 80, 100]; // The break values to define the intervals of population, beginning from 0
+
+             div.innerHTML = '&lt;h4&gt;Population Density &lt;br&gt;people/hectare, 2011 &lt;/h4&gt;'; // The legend title
+
+             for (var i = 0; i &lt; grades.length; i++) {
+                 div.innerHTML +=
+                 '&lt;i style="background:' + getColor(grades[i] + 1) + '"&gt;&lt;/i&gt;&amp;nbsp&amp;nbsp' +
+                 grades[i] + (grades[i + 1] ? '&amp;ndash;' + grades[i + 1] + '&lt;br&gt;' : '+');
+             }
+             return div;
+         };
+         legend.addTo(map);
+
+      &lt;/script&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre></li>
+                    <li>Check to make sure your choropleth map works before continue.</li></ul>
+
+             <h3><i class="fa fa-paint-brush"></i> Add Mouseover Effects</h3>
+                    <p>Now the fun begins. Let's make the boroughs <b>highlighted visually when they are hovered with a mouse</b>.</p>
+                    <ul>
+                      <li>Copy and paste the following snippets to the position shown in the image below. Please read the comment lines in blue for explanations. You do not need to modify anything for answering the lab questions. <br>
+                      <img src="img/insert1.png" width=30% >
+                      <pre>
+<span style="color: blue">// Define the actions when mouseover a feature/borough</span>
+function highlightFeature(e) {
+    var layer = e.target;
+      <span style="color: blue">// You can adjust the values below to change the <b>highlighting styles of features on mouseover</b></span>
+      layer.setStyle({
+         weight: <span style="color:#cc6600">5</span>,
+         color: '<span style="color:#cc6600">#666</span>',
+         dashArray: '', <span style="color: blue">// defines the stroke dash pattern; check out the link for more: https://goo.gl/AWl5sC  </span>
+         fillOpacity: <span style="color:#cc6600">0.7</span>
+      });
+
+      <span style="color: blue">// Fix display layer problems with IE and Opera (no need to change anything)</span>
+      if (!L.Browser.ie &amp;&amp; !L.Browser.opera) {
+         layer.bringToFront();
+      }
+
+      d3.select("#tooltip")
+      .style("visibility", "visible") <span style="color: blue">// The tooltip (with pie chart) will be visible when mouseover  </span>
+      <span style="color: blue">// You can define the position of the pie chart relative to the mouse location: </b> </span>
+      .style("<span style="color:#cc6600">top</span>", (e.containerPoint.y-<span style="color:#cc6600">100</span>)+"px")
+      .style("<span style="color:#cc6600">left</span>", (e.containerPoint.x-<span style="color:#cc6600">100</span>)+"px");
+
+      makePie(layer.feature.properties); <span style="color: blue">// This function will be defined later </b> </span>
+ }
+
+ <span style="color: blue">// Define the actions when mouseout:
+// The highlight effects are removed by resetStyle
+// Also hide the tooltips (with pie chart) when mouseout</span>
+ function resetHighlight(e) {
+      geojson.resetStyle(e.target);
+      d3.select("#tooltip").style("visibility", "hidden");
+   }
+
+<span style="color: blue">// Combine the mouseover and mouseout actions (defined above)</span>
+ function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+    });
+}</pre></li>
+                      <li>Next, add the following line in the position as shown in the image below: <br><pre>onEachFeature: onEachFeature</pre><img src="img/insert2.png" width=45% ><br>As you can tell, this line is used to define the mouseover and mouseout actions for the geojson layer (placed inside the <code>L.geoJson</code> function). <br> Now, your map should have the mouseover highlighting effects added (see example below). We don't see the tooltip with pie charts because we haven't defined it yet. We will do this next. <iframe src="map/hover.html" width=95% height=570 frameborder=0></iframe></li>
+
+                    </ul>
+
+
+              <h3><i class="fa fa-paint-brush"></i> Add Chart as Mouseover Tooltips</h3>
+              <p>Finally, it's time to add the pie charts for mouseover and the pie chart legend.</p>
+                    <ul>
+                        <li>Following the line of <code>legend.addTo(map);</code>, add the following snippet to define the <code>makePie()</code> function.
+                        <pre>
+<span style="color: blue">// The <b>colors assigned to each category</b>, needs to be in the same <b>order</b> as the data items below</span>
+var <b>piecolor</b> = [<span style="color:#cc6600">"#EC7063", "#5DADE2","#27AE60","#F4D03F","#E67E22"</span>];
+
+<span style="color: blue">// The function used to make the pie/donut chart</span>
+function makePie(<span style="color:#cc6600">props</span>) {
+  <span style="color: blue">// First, define the <b>height and width of the pie chart in pixels</b>
+  // Variable name (h and w) doesn't matter as long as they are consistent</span>
+  var h = <span style="color:#cc6600">80</span>;
+  var w = <span style="color:#cc6600">80</span>;
+
+  <span style="color: blue">// Define the <b>radius of the pie</b> as half of the height and width
+  // Again, variable name (r) doesn't matters</span>
+  var r = h/2;
+
+  <span style="color: blue">// The <b>data values</b> for making the pie/donut chart
+  // In this case, we use the pie chart to show the five fields with population count for each ethnic group
+  // <b>props</b> will be defined as <b>layer.feature.properties</b> when the makePie function inside highlightFeature is called
+  // where <b>layer</b> is the borough under mouseover
+  // Then <b>props.White</b> will return White population count for the hovered borough, and so forth</span>
+  var <b>data</b> = [<span style="color:#cc6600">props.White, props.Black, props.Asian, props.Mixed, props.Other</span>];
+
+  <span style="color: blue">// Append the pie chart to the mouse over tooltip/pop-ups (no need to change)</span>
+  var svg = d3.select('#tooltip').select("svg").append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+  var pie = d3.pie().value(function(d){return d;});
+
+  <span style="color: blue">// Draw the arcs of the pie/donut chart
+  // You can change the size of the <b>innerRadius</b> to
+  // make either pie chart (use 0) or docut chart (greater than 0, less than r)</span>
+  var arc = d3.arc().outerRadius(r).innerRadius(<span style="color:#cc6600">16</span>);
+
+  <span style="color: blue">// Draw the slices of the pie/donut chart (no need to change)</span>
+  var arcs = svg.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+  arcs.append("svg:path")
+      .attr("fill", function(d, i){
+          return piecolor[i];
+      })
+      .attr("d", function (d) {
+          return arc(d);
+      });
+  }</pre></li>
+
+
+<li>Next, place the following lines right below <code>&lt;div id="map"&gt;&lt;/div&gt;</code> to define the <b>container</b> for the mouseover popups/tooltips.
+<pre>
+<span style="color:blue">/* Note the height and width of the container need to be greater than and equal to the height and width of the pie*/</span>
+&lt;div id="tooltip"&gt;
+  &lt;svg width="<span style="color:#cc6600">80</span>" height="<span style="color:#cc6600">80</span>"&gt;&lt;/svg&gt;
+&lt;/div&gt;</pre></li>
+<li>Next, place the following lines in the <code>style</code> section (inside <code>head</code>) to define the appearance of the mouseover popups container. <pre>
+#tooltip {
+  opacity: <span style="color:#cc6600">.9</span>;
+  font: <span style="color:#cc6600">14px/16px Helvetica, sans-serif</span>;
+  text-align: <span style="color:#cc6600">center</span>;
+  color: <span style="color:#cc6600">#777</span>;
+  background: <span style="color:#cc6600">rgba(255,255,255,0.8)</span>;
+  padding: <span style="color:#cc6600">5px</span>;
+  border: <span style="color:#cc6600">1px solid lightgrey</span>;
+  border-radius: <span style="color:#cc6600">5px</span>;
+  position: absolute;
+  z-index: 10;   <span style="color:blue"> /* stack order of an element
+                  An element with greater stack order is always in front of an element with a lower stack order
+                  Here we use 10 to make sure the popup is always on top of everything */</span>
+  visibility: hidden;
+  pointer-events: none;
+}</pre>
+
+Place your mouse over some boroughs, you should be able to see the pies, actually donuts now~</li>
+
+<li>The last step is to add legend for the pie charts, so that we know what each color represents in the pie. This is very similar to defining legend for the choropleth maps that you will see below. Add the following lines <b>following</b> the <code>makePie()</code> function.
+<pre>
+var info = L.control({position: '<span style="color:#cc6600">topleft</span>'}); <span style="color: blue">// The other three corners: <b>topright</b>, <b>bottomleft</b>, <b>bottomright</b></span>
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'legend');
+
+    <span style="color: blue">// The <b>labels</b> of for the color boxes in the same order as defined in the data variable (in this case, they are the five ethnic groups)</span>
+    var label = [<span style="color:#cc6600">"White","Black","Asian","Mixed","Other"</span>];
+
+    <span style="color: blue">// The <b>legend title/description</b></span>
+    this._div.innerHTML = '&lt;h4&gt;<span style="color:#cc6600">Ethnic Groups</span> &lt;br&gt; <span style="color:#cc6600">hover over a borough</span>&lt;/h4&gt;';
+
+    <span style="color: blue">// Create the color boxes in the same order as defined in the piecolor variable (no need to change)</span>
+    for (var i = 0; i &lt; label.length; i++) {
+        this._div.innerHTML +=
+        '&lt;i style="background:' + piecolor[i] + '"&gt;&lt;/i&gt;'+
+        (label[i+1] ? '' : '&lt;br&gt;');
+    }
+
+    <span style="color: blue">// Create the labels underneath the color boxes (no need to change)</span>
+    for (var i = 0; i &lt; label.length; i++) {
+        this._div.innerHTML += label[i]+ '&amp;nbsp&amp;nbsp';
+    }
+    return this._div;
+};
+
+info.addTo(map);
+</pre></li>
+
+<li> Okay, now your map should have everything. See below for an example:
+                    <iframe id="final" src="map/final.html" width=95% height=570 frameborder=0></iframe>
+                    </li>
+
+                </ul>
+                <br>
+
+                <br>
+                <h2 >Deliverables (<a href="#top" style="font-weight:normal; text-decoration:underline">Back to Top <i class="fa fa-arrow-circle-up faa-float animated" aria-hidden="true"></i></a>)</h2>
+                <p>Please turn in the <code>data.js</code> and a separate <code>.html</code> file for each question</b> via Dropbox on D2L. There will be <b>FOUR</b> files (or five if you do the extra credit question) in total. </p>
+                <ul id="hw">
+                  <li><b>Question 1:</b> Submit the html file you have just completed by following along the instructions (8 pts).</li>
+
+                  <li><b>Question 2:</b> Save the html file as <code>pie.html</code>. Modify the code to (1) change the donut chart to <b>pie chart</b>; (2) change the <b>colors</b> for the slices (please use appropriate colors, try <a href="http://paletton.com/#uid=10s0u0kl1Wx1x+IcEXDsUWkWEVB" target="_blank">this website</a> which may help you choose colors); and (3) change the position of the <b>pie chart legend to bottomleft</b>. (9 pts). </li>
+
+                  <li><b>Question 3:</b> Save the html file as <code>asian.html</code>. Modify the code to show only <b>Asian</b> and <b>Not Asian</b> in the <b>pie charts</b> and the <b>legend</b>. (8 pts). </li>
+
+                  <li><b>Exam Credit Question (5 pts):</b> Like I explained in class, add a pie chart to the piechart legend to show the ethnic group composition for the entire area (the Greater London Area).</li>
+
+                </ul><br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>Copyright &copy; Ting Liu 2016</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

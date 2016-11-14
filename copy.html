@@ -1,0 +1,105 @@
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+      &lt;title&gt;Chart&lt;/title&gt;
+      &lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css"/&gt;
+      &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"&gt;&lt;/script&gt;
+
+      &lt;script src="https://d3js.org/d3.v4.min.js"&gt;&lt;/script&gt;
+
+      &lt;script type="text/javascript" src="<span style="color: red; font-weight:bold">data.js</span>"&gt;&lt;/script&gt;
+
+      &lt;style type="text/css"&gt;
+         html, body { margin: 0; padding: 0; height: 100%; }
+         #map { min-height: 100%; }
+
+         <span style="color: blue">/* You can adjust the values below to change the <b>appearance of the legend</b> */</span>
+         .legend {
+             padding: 6px 8px;
+             line-height: 20px;
+             background: rgba(255,255,255,0.9);
+             box-shadow: 0 0 15px rgba(0,0,0,0.2);
+             border-radius: 5px;
+         }
+
+          <span style="color: blue">/* You can adjust the values below to change the <b>appearance of the legend color boxes</b> */</span>
+          .legend i {
+             width: 24px;
+             height: 18px;
+             float: left;
+             padding-right: 5px;
+             margin-right: 8px;
+             opacity: 0.8;
+         }
+
+         <span style="color: blue">/* You can adjust the values below to change the <b>appearance of the legend title</b> */</span>
+         .legend h4 {
+           font: 14px/16px Arial, Helvetica, sans-serif;
+           line-height:22px;
+           font-weight: bold;
+           color: #848484;
+           margin: 0 0 5px;
+         }
+     &lt;/style&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+      &lt;div id="map"&gt;&lt;/div&gt;
+
+      &lt;script type="text/javascript"&gt;
+        var map = L.map('map').setView([51.50,-0.18], 10);
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+          attribution: 'Pie chart made with &lt;a href="https://d3js.org/"&gt;D3&lt;/a&gt;, Map data &amp;copy; &lt;a href="http://openstreetmap.org"&gt;OpenStreetMap&lt;/a&gt; contributors, &lt;a href="http://creativecommons.org/licenses/by-sa/2.0/"&gt;CC-BY-SA&lt;/a&gt;, Imagery &amp;copy; &lt;a href="http://mapbox.com"&gt;Mapbox&lt;/a&gt;',
+          maxZoom: 11,
+          minZoom: 5,
+          id: 'mapbox.light',
+          accessToken: '<span style="color: red; font-weight:bold">Your Access Token</span>'
+        }).addTo(map);
+
+        function getColor(value) {
+             return value &gt; 100 ? '#54278f':
+                    value &gt; 80  ? '#756bb1':
+                    value &gt; 50  ? '#9e9ac8':
+                    value &gt; 30  ? '#cbc9e2':
+                                  '#f2f0f7';
+         }
+
+         function style(feature){
+             return {
+                 fillColor: getColor(feature.properties.pop_den),
+                 weight: 2,
+                 opacity: 1,
+                 color: 'gray',
+                 fillOpacity: 0.9
+             };
+         }
+
+         var geojson
+
+         geojson= L.geoJson(data, {
+             style: style,
+
+         }).addTo(map);
+
+         var legend = L.control({position: 'bottomright'}); // Try the other three corners if you like.
+
+         legend.onAdd = function (map) {
+             var div = L.DomUtil.create('div', 'legend'),
+                 grades = [20, 30, 50, 80, 100]; // The break values to define the intervals of population, beginning from 0
+
+             div.innerHTML = '&lt;h4&gt;Population Density &lt;br&gt;people/hectare, 2011 &lt;/h4&gt;'; // The legend title
+
+             for (var i = 0; i &lt; grades.length; i++) {
+                 div.innerHTML +=
+                 '&lt;i style="background:' + getColor(grades[i] + 1) + '"&gt;&lt;/i&gt;&amp;nbsp&amp;nbsp' +
+                 grades[i] + (grades[i + 1] ? '&amp;ndash;' + grades[i + 1] + '&lt;br&gt;' : '+');
+             }
+             return div;
+         };
+         legend.addTo(map);
+
+      &lt;/script&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre></li>
