@@ -1,1 +1,0 @@
-See [discussion on Hacker News](http://news.ycombinator.com/item?id=4858817). Built with [D3](http://d3js.org) and [TopoJSON](https://github.com/mbostock/topojson).
